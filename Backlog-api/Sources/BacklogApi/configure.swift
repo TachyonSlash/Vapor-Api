@@ -11,7 +11,7 @@ public func configure(_ app: Application) async throws {
 
     app.databases.use(DatabaseConfigurationFactory.mysql(
         hostname: Environment.get("DATABASE_HOST") ?? "localhost",
-        port: Environment.get("DATABASE_PORT").flatMap(Int.init(_:)) ?? 3310,
+        port: Environment.get("DATABASE_PORT").flatMap(Int.init(_:)) ?? 3316,
         username: Environment.get("DATABASE_USERNAME") ?? "vapor_username",
         password: Environment.get("DATABASE_PASSWORD") ?? "vapor_password",
         database: Environment.get("DATABASE_NAME") ?? "vapor_database",
