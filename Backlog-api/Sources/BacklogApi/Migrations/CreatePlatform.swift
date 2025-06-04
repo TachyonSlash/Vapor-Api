@@ -10,6 +10,6 @@ struct CreatePlatform: AsyncMigration {
     }
 
     func revert(on database: any Database) async throws {
-        try await database.schema("genres").delete()
+        try await database.schema("platforms").delete()
     }
 }
