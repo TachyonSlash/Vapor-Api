@@ -7,6 +7,7 @@ struct CreateGame: AsyncMigration {
             .field("title", .string, .required)
             .field("desc", .string, .required)
             .field("review", .string, .required)
+            .field("rating", .double, .required)
             .field("releaseDate", .datetime, .required)
             .field("developer", .string, .required)
             .field("publisher", .string, .required)
