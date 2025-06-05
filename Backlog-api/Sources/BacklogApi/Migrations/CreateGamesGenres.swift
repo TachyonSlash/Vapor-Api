@@ -6,7 +6,7 @@ struct CreateGamesGenres: AsyncMigration {
             .id()
             .field("gameId", .uuid, .required, references("games", "id", onDelete: .cascade))
             .field("genreId", .uuid, .required, references("genres", "id", onDelete: .cascade))
-            .unique(on: "gameId", "GenreId")
+            .unique(on: "gameId", "genreId")
             .create()
     }
 
