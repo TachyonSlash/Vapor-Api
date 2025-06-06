@@ -12,5 +12,12 @@ func routes(_ app: Application) throws {
 
     try app.register(collection: UsuarioController())
     try app.register(collection: GameController())
+    try app.register(collection: GenreController())
+    try app.register(collection: PlatformController())
+    try app.register(collection: GamesGenresController())
+    try app.register(collection: GamePlatformsController())
+    
+
+
 
 }
