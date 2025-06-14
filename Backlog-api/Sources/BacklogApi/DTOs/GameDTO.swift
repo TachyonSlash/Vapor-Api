@@ -14,12 +14,10 @@ struct GameDTO: Content {
     var genres: [String]
     var image: String?
 
-    init(id: UUID? = nil, title: String, desc: String, review: String, rating: Double, releaseDate: Date, developer: String, publisher: String, platform: [String], genres: [String], image: String? = nil) {
+    init(id: UUID? = nil, title: String, desc: String, releaseDate: Date, developer: String, publisher: String, platform: [String], genres: [String], image: String? = nil) {
         self.id = id
         self.title = title
         self.desc = desc
-        self.review = review
-        self.rating = rating
         self.releaseDate = releaseDate
         self.developer = developer
         self.publisher = publisher
