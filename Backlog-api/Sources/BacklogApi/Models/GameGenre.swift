@@ -2,16 +2,16 @@ import Foundation
 import Fluent 
 import Vapor
 
-final class GamesGenres: Model, Content {
-    static let schema = "games_genres"
+final class GameGenre: Model, Content {
+    static let schema = "gamesGenres"
 
     @ID(key: .id)
     var id: UUID?
 
-    @Parent(key: "game_id")
+    @Parent(key: "gameId")
     var game: Game
 
-    @Parent(key: "genre_id")
+    @Parent(key: "genreId")
     var genre: Genre
 
     init() { }

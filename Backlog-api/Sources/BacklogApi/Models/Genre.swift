@@ -1,8 +1,8 @@
 import Fluent
 import Vapor
 
-final class Platform: Model, Content {
-    static let schema = "platforms"
+final class Genre: Model, Content {
+    static let schema = "genres"
 
     @ID(key: .id)
     var id: UUID?
@@ -10,7 +10,7 @@ final class Platform: Model, Content {
     @Field(key: "name")
     var name: String
 
-    @Siblings(through: GamePlatform.self, from: \.$platform, to: \.$game)
+    @Siblings(through: GameGenre.self, from: \.$genre, to: \.$game)
     var games: [Game]
 
     init() {}
