@@ -3,7 +3,7 @@ import Fluent
 
 struct GamesGenresController : RouteCollection {
     func boot(routes: any RoutesBuilder) throws {
-        let gamesGenres = routes.grouped("gamesgenres")
+        let gamesGenres = routes.grouped("gameGenres")
         
         gamesGenres.get(use: self.getGamesGenres)
         gamesGenres.post(use: self.create)

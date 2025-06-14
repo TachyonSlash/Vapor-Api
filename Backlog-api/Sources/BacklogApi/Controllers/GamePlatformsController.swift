@@ -3,7 +3,7 @@ import Fluent
 
 struct GamePlatformController: RouteCollection {
     func boot(routes: any RoutesBuilder) throws {
-        let gamePlatforms = routes.grouped("gameplatforms")
+        let gamePlatforms = routes.grouped("gamePlatforms")
         
         gamePlatforms.get(use: self.getGamePlatforms)
         gamePlatforms.post(use: self.create)
