@@ -6,6 +6,8 @@ struct UsuarioGameController: RouteCollection {
         let usuarioGames = routes.grouped("usuarioGames")
         usuarioGames.get(use: self.getAll)
         usuarioGames.post(use: self.create)
+        usuarioGames.put(use: self.update)
+        usuarioGames.delete(":id", use: self.delete)
     }
 
     func getAll(req: Request) async throws -> [UsuarioGameDTO] {
@@ -39,5 +41,39 @@ struct UsuarioGameController: RouteCollection {
         )
         try await usuarioGame.save(on: req.db)
         return usuarioGameDTO
+    }
+
+    func update(req: Request) async throws -> UsuarioGameDTO {
+        let usuarioGameDTO = try req.content.decode(UsuarioGameDTO.self)
+        guard let id = usuarioGameDTO.id else {
+            throw Abort(.badRequest, reason: "ID is required for update")
+        }
+        
+        guard let usuarioGame = try await UsuarioGame.find(id, on: req.db) else {
+            throw Abort(.notFound, reason: "UsuarioGame not found")
+        }
+        
+        usuarioGame.usuario_id = usuarioGameDTO.usuario_id
+        usuarioGame.juego_id = usuarioGameDTO.juego_id
+        usuarioGame.status = usuarioGameDTO.status
+        usuarioGame.review = usuarioGameDTO.review
+        usuarioGame.rating = usuarioGameDTO.rating
+        usuarioGame.fecha_agregado = usuarioGameDTO.fecha_agregado
+        
+        try await usuarioGame.update(on: req.db)
+        return usuarioGameDTO
+    }
+
+    func delete(req: Request) async throws -> HTTPStatus {
+        guard let id = req.parameters.get("id", as: UUID.self) else {
+            throw Abort(.badRequest, reason: "ID is required for deletion")
+        }
+        
+        guard let usuarioGame = try await UsuarioGame.find(id, on: req.db) else {
+            throw Abort(.notFound, reason: "UsuarioGame not found")
+        }
+        
+        try await usuarioGame.delete(on: req.db)
+        return .noContent
     }
 }
