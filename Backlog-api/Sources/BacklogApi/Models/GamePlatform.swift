@@ -1,6 +1,6 @@
 import Fluent
 
-final class GamePlatform: Model {
+final class GamePlatform: Model, @unchecked Sendable {
     static let schema = "gamePlatforms"
 
     @ID()
@@ -14,8 +14,9 @@ final class GamePlatform: Model {
 
     init() {}
 
-    init(gameID: UUID, platformID: UUID) {
-        self.$game.id = gameID
-        self.$platform.id = platformID
+    init(id: UUID? = nil, gameId: UUID, platformId: UUID) {
+        self.id = id
+        self.$game.id = gameId
+        self.$platform.id = platformId
     }
 }

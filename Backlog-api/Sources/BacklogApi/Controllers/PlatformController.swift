@@ -19,25 +19,27 @@ struct PlatformController: RouteCollection {
     }
 
     // Crea una nueva plataforma
-    func create(req: Request) async throws -> PlatformDTO {
-        let dto = try req.content.decode(PlatformDTO.self)
+     func create(req: Request) async throws -> PlatformDTO {
+            let dto = try req.content.decode(PlatformDTO.self)
 
-    // Validar que el nombre no es vacío
-        guard !dto.name.trimmingCharacters(in: .whitespaces).isEmpty else {
-            throw Abort(.badRequest, reason: "Platform name cannot be empty.")
+            // Validar que el nombre no es vacío
+            guard !dto.name.trimmingCharacters(in: .whitespaces).isEmpty else {
+                throw Abort(.badRequest, reason: "Platform name cannot be empty.")
+            }
+
+            // Verificar si ya existe una plataforma con el mismo nombre
+            if let _ = try await Platform.query(on: req.db)
+                .filter(\.$name == dto.name)
+                .first() {
+                throw Abort(.badRequest, reason: "Platform with name '\(dto.name)' already exists.")
+            }
+
+            // Cambia la inicialización para no pasar argumentos
+            let platform = Platform()
+            platform.name = dto.name
+            try await platform.save(on: req.db)
+
+            return PlatformDTO(id: platform.id, name: platform.name)
         }
-
-    // Verificar si ya existe una plataforma con el mismo nombre
-        if let _ = try await Platform.query(on: req.db)
-            .filter(.sql(raw: "LOWER(name) = LOWER(?)"), dto.name)
-            .first() {
-            throw Abort(.badRequest, reason: "Platform with name '\(dto.name)' already exists.")
-        }
-
-        let platform = Platform(name: dto.name)
-        try await platform.save(on: req.db)
-
-        return PlatformDTO(id: platform.id, name: platform.name)
-    }
 
 }

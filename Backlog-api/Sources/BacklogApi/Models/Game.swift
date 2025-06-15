@@ -1,7 +1,7 @@
 import Fluent
 import Vapor
 
-final class Game: Model, Content {
+final class Game: Model, Content, @unchecked Sendable {
     static let schema = "games"
 
     @ID(key: .id)
@@ -28,7 +28,7 @@ final class Game: Model, Content {
     @Siblings(through: GamePlatform.self, from: \.$game, to: \.$platform)
     var platforms: [Platform]
 
-    @Siblings(through: GamesGenres.self, from: \.$game, to: \.$genre)
+    @Siblings(through: GameGenre.self, from: \.$game, to: \.$genre)
     var genres: [Genre]
 
     init() {}

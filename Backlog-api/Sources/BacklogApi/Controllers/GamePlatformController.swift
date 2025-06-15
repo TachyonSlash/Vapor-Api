@@ -15,8 +15,8 @@ struct GamePlatformController: RouteCollection {
         gamePlatformsDB.forEach { gamePlatform in
             let dto = GamePlatformDTO(
                 id: gamePlatform.id,
-                gameId: gamePlatform.gameId,
-                platformId: gamePlatform.platformId
+                gameId: gamePlatform.$game.id,
+                platformId: gamePlatform.$platform.id
             )
             gamePlatformMock.append(dto)
         }

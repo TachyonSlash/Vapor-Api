@@ -10,18 +10,18 @@ struct UsuarioGameController: RouteCollection {
         usuarioGames.delete(":id", use: self.delete)
     }
 
-    func getAll(req: Request) async throws -> [UsuarioGameDTO] {
+     func getAll(req: Request) async throws -> [UsuarioGameDTO] {
         var usuarioGamesMock: [UsuarioGameDTO] = []
         let usuarioGamesDB = try await UsuarioGame.query(on: req.db).all()
         usuarioGamesDB.forEach { usuarioGame in
-            var usuarioGameDTO = UsuarioGameDTO(
+            let usuarioGameDTO = UsuarioGameDTO(
                 id: usuarioGame.id,
-                usuario_id: usuarioGame.usuario_id,
-                juego_id: usuarioGame.juego_id,
+                usuarioId: usuarioGame.$usuario.id,
+                juegoId: usuarioGame.$game.id,
                 status: usuarioGame.status,
                 review: usuarioGame.review,
                 rating: usuarioGame.rating,
-                fecha_agregado: usuarioGame.fecha_agregado
+                fechaAgregado: usuarioGame.fechaAgregado
             )
             usuarioGamesMock.append(usuarioGameDTO)
         }
@@ -32,12 +32,12 @@ struct UsuarioGameController: RouteCollection {
         let usuarioGameDTO = try req.content.decode(UsuarioGameDTO.self)
         let usuarioGame = UsuarioGame(
             id: usuarioGameDTO.id,
-            usuario_id: usuarioGameDTO.usuario_id,
-            juego_id: usuarioGameDTO.juego_id,
+            usuarioId: usuarioGameDTO.usuarioId,
+            juegoId: usuarioGameDTO.juegoId,
             status: usuarioGameDTO.status,
             review: usuarioGameDTO.review,
             rating: usuarioGameDTO.rating,
-            fecha_agregado: usuarioGameDTO.fecha_agregado
+            fechaAgregado: usuarioGameDTO.fechaAgregado
         )
         try await usuarioGame.save(on: req.db)
         return usuarioGameDTO
@@ -53,12 +53,12 @@ struct UsuarioGameController: RouteCollection {
             throw Abort(.notFound, reason: "UsuarioGame not found")
         }
         
-        usuarioGame.usuario_id = usuarioGameDTO.usuario_id
-        usuarioGame.juego_id = usuarioGameDTO.juego_id
+        usuarioGame.$usuario.id = usuarioGameDTO.usuarioId
+        usuarioGame.$game.id = usuarioGameDTO.juegoId
         usuarioGame.status = usuarioGameDTO.status
         usuarioGame.review = usuarioGameDTO.review
         usuarioGame.rating = usuarioGameDTO.rating
-        usuarioGame.fecha_agregado = usuarioGameDTO.fecha_agregado
+        usuarioGame.fechaAgregado = usuarioGameDTO.fechaAgregado
         
         try await usuarioGame.update(on: req.db)
         return usuarioGameDTO

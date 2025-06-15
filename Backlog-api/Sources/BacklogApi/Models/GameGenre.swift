@@ -1,11 +1,9 @@
-import Foundation
-import Fluent 
-import Vapor
+import Fluent
 
-final class GameGenre: Model, Content {
-    static let schema = "gamesGenres"
+final class GameGenre: Model, @unchecked Sendable {
+    static let schema = "gameGenres"
 
-    @ID(key: .id)
+    @ID()
     var id: UUID?
 
     @Parent(key: "gameId")
@@ -14,7 +12,7 @@ final class GameGenre: Model, Content {
     @Parent(key: "genreId")
     var genre: Genre
 
-    init() { }
+    init() {}
 
     init(id: UUID? = nil, gameId: UUID, genreId: UUID) {
         self.id = id

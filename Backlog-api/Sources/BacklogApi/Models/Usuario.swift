@@ -1,8 +1,7 @@
-import Foundation
 import Fluent
+import Vapor
 
-final class Usuario : Model, @unchecked Sendable {
-
+final class Usuario: Model, Content, @unchecked Sendable {
     static let schema = "usuarios"
 
     @ID(key: .id)
@@ -17,16 +16,8 @@ final class Usuario : Model, @unchecked Sendable {
     @Field(key: "password")
     var password: String
 
-    @Field(key: "image")
+    @OptionalField(key: "image")
     var image: String?
 
-    init(){}
-
-    init(id: UUID?, username: String, email: String, password: String, image: String? = nil) {
-        self.id = id
-        self.username = username
-        self.email = email
-        self.password = password
-        self.image = image
-    }
+    init() {}
 }

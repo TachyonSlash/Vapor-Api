@@ -15,7 +15,7 @@ func routes(_ app: Application) throws {
     try app.register(collection: GenreController())
     try app.register(collection: PlatformController())
     try app.register(collection: GamesGenresController())
-    try app.register(collection: GamePlatformsController())
+    try app.register(collection: GamePlatformController())
     try app.register(collection: UsuarioGameController())
     
 
