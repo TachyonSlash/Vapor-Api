@@ -19,6 +19,12 @@ public func configure(_ app: Application) async throws {
     ), as: .mysql)
 
     app.migrations.add(CreateUsuario())
+    app.migrations.add(CreateGame())
+    app.migrations.add(CreateGenre())
+    app.migrations.add(CreatePlatform())
+    app.migrations.add(CreateUsuarioJuego())
+    app.migrations.add(CreateGamesPlatforms())
+    app.migrations.add(CreateGamesGenres())
 
     app.views.use(.leaf)
 

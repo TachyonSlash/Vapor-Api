@@ -7,10 +7,10 @@ final class UsuarioGame: Model, Content, @unchecked Sendable {
     @ID()
     var id: UUID?
 
-    @Parent(key: "usuarioId")
+    @Parent(key: "usuario_id")
     var usuario: Usuario
 
-    @Parent(key: "juegoId")
+    @Parent(key: "juego_id")
     var game: Game
 
     @Field(key: "status")
@@ -22,7 +22,7 @@ final class UsuarioGame: Model, Content, @unchecked Sendable {
     @OptionalField(key: "rating")
     var rating: Double?
 
-    @OptionalField(key: "fechaAgregado")
+    @OptionalField(key: "fecha_agregado")
     var fechaAgregado: Date?
 
     init() {}

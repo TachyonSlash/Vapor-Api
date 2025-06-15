@@ -2,7 +2,7 @@ import Vapor
 import Fluent
 
 struct GameController: RouteCollection {
-    func boot(routes: any RoutesBuilder) throws{
+    func boot(routes: any RoutesBuilder) throws {
         let games = routes.grouped("games")
         games.get(use: self.getGames)
         games.post(use: self.create)
@@ -39,6 +39,21 @@ struct GameController: RouteCollection {
         game.image = gameDTO.image ?? ""
 
         try await game.save(on: req.db)
+
+        if !gameDTO.platform.isEmpty {
+            let platforms = try await Platform.query(on: req.db)
+                .filter(\.$name ~~ gameDTO.platform)
+                .all()
+            try await game.$platforms.attach(platforms, on: req.db)
+        }
+
+        if !gameDTO.genres.isEmpty {
+            let genres = try await Genre.query(on: req.db)
+                .filter(\.$name ~~ gameDTO.genres)
+                .all()
+            try await game.$genres.attach(genres, on: req.db)
+        }
+
         return gameDTO
     }
 }

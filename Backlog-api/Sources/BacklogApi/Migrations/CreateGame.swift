@@ -5,7 +5,7 @@ struct CreateGame: AsyncMigration {
         try await database.schema("games")
             .id()
             .field("title", .string, .required)
-            .field("desc", .string, .required)
+            .field("desc", .custom("TEXT"), .required)
             // .field("review", .string, .required)
             // .field("rating", .double, .required)
             .field("releaseDate", .datetime, .required)
