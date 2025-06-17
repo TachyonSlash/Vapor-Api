@@ -7,6 +7,9 @@ struct GameController: RouteCollection {
         games.get(use: self.getGames)
         games.post(use: self.create)
         games.put(":id", use: self.update)
+        games.delete(":id", use: self.delete)
+        games.get("platforms", use: self.getGamePlatforms)
+        games.get("genres", use: self.getGameGenres)
     }
 
     func getGames(req: Request) async throws -> [GameDTO] {
@@ -102,5 +105,39 @@ struct GameController: RouteCollection {
             genres: updateDTO.genres,
             image: game.image
         )
+    }
+
+    func delete(req: Request) async throws -> HTTPStatus {
+        guard let id = req.parameters.get("id", as: UUID.self) else {
+            throw Abort(.badRequest, reason: "ID is required for deletion")
+        }
+
+        guard let game = try await Game.find(id, on: req.db) else {
+            throw Abort(.notFound, reason: "Game not found")
+        }
+
+        try await game.delete(on: req.db)
+        return .noContent
+    }
+
+    func getGamePlatforms(req: Request) async throws -> [GamePlatformDTO] {
+        let gamePlatformsDB = try await GamePlatform.query(on: req.db).all()
+        return gamePlatformsDB.map { gamePlatform in
+            GamePlatformDTO(
+                id: gamePlatform.id,
+                gameId: gamePlatform.$game.id,
+                platformId: gamePlatform.$platform.id
+            )
+        }
+    }
+    func getGameGenres(req: Request) async throws -> [GameGenreDTO] {
+        let gameGenresDB = try await GameGenre.query(on: req.db).all()
+        return gameGenresDB.map { gameGenre in
+            GameGenreDTO(
+                id: gameGenre.id,
+                gameId: gameGenre.$game.id,
+                genreId: gameGenre.$genre.id
+            )
+        }
     }
 }
