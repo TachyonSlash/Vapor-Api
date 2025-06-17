@@ -6,6 +6,7 @@ struct GameController: RouteCollection {
         let games = routes.grouped("games")
         games.get(use: self.getGames)
         games.post(use: self.create)
+        games.put(":id", use: self.update)
     }
 
     func getGames(req: Request) async throws -> [GameDTO] {
@@ -55,5 +56,51 @@ struct GameController: RouteCollection {
         }
 
         return gameDTO
+    }
+
+    func update(req: Request) async throws -> GameDTO {
+        let gameId = try req.parameters.require("id", as: UUID.self)
+        let updateDTO = try req.content.decode(GameDTO.self)
+
+        guard let game = try await Game.find(gameId, on: req.db) else {
+            throw Abort(.notFound, reason: "Game not found")
+        }
+
+        game.title = updateDTO.title
+        game.desc = updateDTO.desc
+        game.releaseDate = updateDTO.releaseDate
+        game.developer = updateDTO.developer
+        game.publisher = updateDTO.publisher
+        game.image = updateDTO.image ?? ""
+
+        try await game.save(on: req.db)
+
+        if !updateDTO.platform.isEmpty {
+            let platforms = try await Platform.query(on: req.db)
+                .filter(\.$name ~~ updateDTO.platform)
+                .all()
+            try await game.$platforms.detachAll(on: req.db)
+            try await game.$platforms.attach(platforms, on: req.db)
+        }
+
+        if !updateDTO.genres.isEmpty {
+            let genres = try await Genre.query(on: req.db)
+                .filter(\.$name ~~ updateDTO.genres)
+                .all()
+            try await game.$genres.detachAll(on: req.db)
+            try await game.$genres.attach(genres, on: req.db)
+        }
+
+        return GameDTO(
+            id: game.id,
+            title: game.title,
+            desc: game.desc,
+            releaseDate: game.releaseDate,
+            developer: game.developer,
+            publisher: game.publisher,
+            platform: updateDTO.platform,
+            genres: updateDTO.genres,
+            image: game.image
+        )
     }
 }
