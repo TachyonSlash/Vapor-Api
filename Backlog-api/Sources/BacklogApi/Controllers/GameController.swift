@@ -130,10 +130,10 @@ struct GameController: RouteCollection {
             )
         }
     }
-    func getGameGenres(req: Request) async throws -> [GameGenreDTO] {
+    func getGameGenres(req: Request) async throws -> [GamesGenresDTO] {
         let gameGenresDB = try await GameGenre.query(on: req.db).all()
         return gameGenresDB.map { gameGenre in
-            GameGenreDTO(
+            GamesGenresDTO(
                 id: gameGenre.id,
                 gameId: gameGenre.$game.id,
                 genreId: gameGenre.$genre.id
